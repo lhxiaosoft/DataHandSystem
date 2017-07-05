@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="authority.edu.csu.dao.adminroleuserinfomanager.IAdminRoleUserInfoDao">
+<select id="queryByList" parameterType="int" resultType="authority.edu.csu.vo.AdminRoleUserInfoVo">
+SELECT B.ROLE_ID,ROLE_NAME ,'true' checked  , '0' pId  FROM BS_ADMINROLEUSERINFO  as T
+LEFT JOIN BS_ADMINROLEINFO as B ON B.ROLE_ID=t.ROLE_ID  WHERE T.USER_ID = #{USER_ID}
+UNION ALL
+SELECT R2.ROLE_ID,R2.ROLE_NAME ,'false' checked  , '0' pId  
+FROM BS_ADMINROLEINFO R2 WHERE R2.ROLE_ID NOT IN (SELECT ROLE_ID FROM BS_ADMINROLEUSERINFO WHERE USER_ID = #{USER_ID})
+</select>
+
+<delete id="delByUserId" parameterType="Object">
+DELETE FROM BS_ADMINROLEUSERINFO WHERE USER_ID = #{USER_ID}
+</delete>
+<insert id="addRoleByUserId" parameterType="Object" keyColumn="CODE">
+  INSERT INTO BS_ADMINROLEUSERINFO (ROLEUSER_ID,USER_ID,ROLE_ID) VALUES (#{ROLEUSER_ID},#{USER_ID},#{ROLE_ID})
+</insert>
+</mapper>

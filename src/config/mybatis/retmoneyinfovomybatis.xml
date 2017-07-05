@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.csu.dao.IRetMoneyInfoVoDao">
+
+	<select id="queryByList" parameterType="int" resultType="edu.csu.model.vo.RetMoneyInfoVo">
+		select 
+		rec.REC_NAME as REC_NAME,
+		ret.REC_ID as REC_ID,
+		ret.RET_ID as RET_ID,
+		ret.RET_TIMES as RET_TIMES,
+		ret.SHO_UNIT_PRICE as SHO_UNIT_PRICE,
+		ret.RET_UNIT_PRICE as RET_UNIT_PRICE,
+		ret.HAV_RET as HAV_RET,
+		ret.HAD_RET as HAD_RET,
+		ret.TAL_BANLANCE as TAL_BANLANCE,
+		ret.REMARK as REMARK
+		 from 
+		REC_POINT rec ,RET_MONEY_INFO  ret
+		where rec.REC_ID=ret.REC_ID   AND 1=1
+		<if test="RET_TIMES !=null and RET_TIMES !=''">
+			AND RET_TIMES LIKE '%${RET_TIMES}%'
+		</if>
+		<if test="REC_ID !=null and REC_ID !=''">
+			AND rec.REC_ID LIKE '%${REC_ID}%'
+		</if>
+		
+	    <if test="pager.orderCondition != null and pager.orderCondition != ''" >
+      		${pager.orderCondition}
+    	</if>
+    	order by RET_TIMES ASC
+    	
+	</select>
+	<insert id="add" keyColumn="RET_ID" parameterType="Object">
+		INSERT INTO RET_MONEY_INFO(REC_ID,RET_ID,RET_TIMES<!-- , SHO_UNIT_PRICE -->,RET_UNIT_PRICE,HAV_RET,<!-- HAD_RET,TAL_BANLANCE, -->REMARK) 
+		VALUES (#{REC_ID},#{RET_ID},#{RET_TIMES}<!--,  #{SHO_UNIT_PRICE} -->,#{RET_UNIT_PRICE},#{HAV_RET},<!-- #{HAD_RET},#{TAL_BANLANCE}, -->#{REMARK})
+	</insert>
+	<update id="update" parameterType="Object">
+		UPDATE RET_MONEY_INFO SET 
+		RET_TIMES=#{RET_TIMES},
+		<!-- SHO_UNIT_PRICE=#{SHO_UNIT_PRICE}, -->
+		RET_UNIT_PRICE =#{RET_UNIT_PRICE},
+		HAV_RET=#{HAV_RET},
+		<!-- HAD_RET=#{HAD_RET},
+		TAL_BANLANCE =#{TAL_BANLANCE}, -->
+		REMARK =#{REMARK}
+		WHERE RET_ID = #{RET_ID}
+	</update>
+	
+	<delete id="del" parameterType="java.lang.String" >
+    delete from RET_MONEY_INFO
+    where RET_ID = #{id}
+  	</delete>
+  	
+  	<delete id="deleteById" parameterType="java.lang.String" >
+    delete from RET_MONEY_INFO
+    where REC_ID = #{id}
+  	</delete>
+  	
+  	<select id="queryListById" parameterType="java.lang.String" resultType="edu.csu.model.vo.RetMoneyInfoVo">
+		select 
+		ret.REC_ID as REC_ID,
+		ret.RET_ID as RET_ID,
+		ret.RET_TIMES as RET_TIMES,
+		ret.SHO_UNIT_PRICE as SHO_UNIT_PRICE,
+		ret.RET_UNIT_PRICE as RET_UNIT_PRICE,
+		ret.HAV_RET as HAV_RET,
+		ret.HAD_RET as HAD_RET,
+		ret.TAL_BANLANCE as TAL_BANLANCE,
+		ret.REMARK as REMARK
+		from RET_MONEY_INFO  ret
+		where REC_ID =#{id}
+	</select>
+	
+	<select id="queryByCount" parameterType="edu.csu.model.vo.RetMoneyInfoVo" resultType="java.lang.Integer">
+		select  ISNULL( count(*), 0 )
+		from RET_MONEY_INFO  ret
+		where REC_ID =#{REC_ID} and RET_TIMES=#{RET_TIMES}
+	</select>
+	
+	
+</mapper>

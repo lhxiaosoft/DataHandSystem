@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="edu.csu.dao.IStuInfoDao">
+		<select id="queryByList" parameterType="edu.csu.model.STU_INFO" resultType="edu.csu.model.STU_INFO">
+			SELECT STU_INFO_ID
+		      ,a.REC_ID as REC_ID
+		      ,b.REC_NAME as recName
+		      ,STU_CODE
+		      ,STU_NAME
+		      ,STU_SEX
+		      ,ADM_TIME
+		      ,MASTER
+		      ,GRA_STATE
+		      ,FIR_PAY
+		      ,FIR_PAYBACK
+		      ,FIR_PAYBACK_TIME
+		      ,SEC_PAY
+		      ,SEC_PAYBACK
+		      ,SEC_PAYBACK_TIME
+		      ,ALL_PAY
+		      ,ALL_LESSPAY
+		      ,a.REMARK as REMARK
+		      ,SHOULD_PAY
+		      ,LESSPAY_STATE 
+		      ,THI_PAY
+		      FROM STU_INFO a,REC_POINT b WHERE a.REC_ID=b.REC_ID and 1=1
+			<if test="ADM_TIME !=null and ADM_TIME !='' and ADM_TIME!='全部' ">
+				AND ADM_TIME LIKE '%${ADM_TIME}%'
+			</if>
+			<if test="recName !=null and recName !='' and recName !='全部'">
+				AND b.REC_NAME LIKE '%${recName}%'
+			</if>
+			<if test="GRA_STATE !=null and GRA_STATE !='' and GRA_STATE !='全部'">
+				AND GRA_STATE LIKE '%${GRA_STATE}%'
+			</if>
+			<if test="LESSPAY_STATE !=null and LESSPAY_STATE !='' and LESSPAY_STATE!='全部'">
+				AND LESSPAY_STATE='${LESSPAY_STATE}'
+			</if>
+			<if test="STU_NAME !=null and STU_NAME !='' ">
+				AND STU_NAME LIKE '%${STU_NAME}%'
+			</if>
+			<if test="REC_ID !=null and REC_ID !=''">     <!-- 用于批量删除时  进行查询 -->
+			AND a.REC_ID LIKE '%${REC_ID}%'
+			</if>
+			<choose>
+				<when test="pager.orderCondition != null and pager.orderCondition != ''">
+		      		${pager.orderCondition}
+				</when>
+				<otherwise>
+					ORDER by REC_YEAR DESC
+			</otherwise>
+		   </choose>
+		    
+		</select>
+		<insert id="add" keyColumn="STU_INFO_ID" parameterType="Object">
+			INSERT INTO STU_INFO(STU_INFO_ID,REC_ID,STU_CODE,STU_NAME,STU_SEX,ADM_TIME,MASTER,GRA_STATE,FIR_PAY,FIR_PAYBACK,FIR_PAYBACK_TIME,SEC_PAY,SEC_PAYBACK,SEC_PAYBACK_TIME,ALL_PAY,ALL_LESSPAY,REMARK,SHOULD_PAY,LESSPAY_STATE,THI_PAY) 
+			VALUES (#{STU_INFO_ID},#{REC_ID},#{STU_CODE},#{STU_NAME},#{STU_SEX},#{ADM_TIME},#{MASTER},#{GRA_STATE},#{FIR_PAY},#{FIR_PAYBACK},#{FIR_PAYBACK_TIME},#{SEC_PAY},#{SEC_PAYBACK},#{SEC_PAYBACK_TIME},#{ALL_PAY},#{ALL_LESSPAY},#{REMARK},#{SHOULD_PAY},#{LESSPAY_STATE},#{THI_PAY})
+		</insert>
+		
+		<delete id="del" parameterType="java.lang.String" >
+		    delete from STU_INFO
+		    where STU_INFO_ID = #{STU_INFO_ID}
+	  	</delete>
+	  	
+	  	<delete id="deleteById" parameterType="java.lang.String" >
+		    delete from STU_INFO
+		    where REC_ID = #{id}
+  		</delete>
+	  	
+	  	<update id="update" parameterType="Object">
+			UPDATE STU_INFO SET 
+			REC_ID=#{REC_ID},
+			STU_CODE =#{STU_CODE},
+			STU_NAME=#{STU_NAME},
+			STU_SEX=#{STU_SEX},
+			ADM_TIME =#{ADM_TIME},
+			MASTER=#{MASTER},
+			GRA_STATE=#{GRA_STATE},
+			FIR_PAY =#{FIR_PAY},
+			FIR_PAYBACK =#{FIR_PAYBACK},
+			FIR_PAYBACK_TIME=#{FIR_PAYBACK_TIME},
+			SEC_PAY=#{SEC_PAY},
+			SEC_PAYBACK =#{SEC_PAYBACK},
+			SEC_PAYBACK_TIME=#{SEC_PAYBACK_TIME},
+			ALL_PAY=#{ALL_PAY},
+			ALL_LESSPAY=#{ALL_LESSPAY},
+			SHOULD_PAY=#{SHOULD_PAY},
+			REMARK =#{REMARK},
+			LESSPAY_STATE=#{LESSPAY_STATE},
+			THI_PAY=#{THI_PAY}
+			WHERE STU_INFO_ID = #{STU_INFO_ID}
+		</update>
+	</mapper>

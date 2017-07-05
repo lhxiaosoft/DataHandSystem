@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="edu.csu.dao.IPayInfoCalVoDao">
+		<select id="queryByList" parameterType="Object" resultType="edu.csu.model.vo.PayInfoCalVo">
+			SELECT a.REC_ID
+		      ,REC_NAME 
+		      ,REC_YEAR
+		      ,REC_NUMBER
+		      ,RET_ID AS RetId
+		      ,RET_TIMES as RetTimes
+		      ,RET_UNIT_PRICE AS RetUnitPrice
+		      ,HAV_RET AS HavRet
+		      ,HAD_RET AS HAD_RET
+		      ,TAL_BANLANCE AS TAL_BANLANCE
+		      ,b.REMARK AS Remark
+		      FROM REC_POINT a,RET_MONEY_INFO b WHERE a.REC_ID=b.REC_ID and 1=1
+			<if test="REC_NAME !=null and REC_NAME !='' and REC_NAME !='全部' ">
+				AND REC_NAME LIKE '%${REC_NAME}%'
+			</if>
+			<if test="REC_YEAR !=null and REC_YEAR !='' and REC_YEAR !='全部'">
+				AND REC_YEAR LIKE '%${REC_YEAR}%'
+			</if>
+			<if test="RetTimes !=null and RetTimes !='' and RetTimes !='全部'">
+				AND RET_TIMES LIKE '%${RetTimes}%'
+			</if>
+			<if test="REC_ID !=null and REC_ID !='' ">
+				AND a.REC_ID LIKE '%${REC_ID}%'
+			</if>
+			<choose>
+				<when test="pager.orderCondition != null and pager.orderCondition != ''">
+		      		${pager.orderCondition}
+				</when>
+				<otherwise>
+					ORDER by REC_YEAR DESC,REC_NAME DESC,RET_TIMES ASC
+				</otherwise>
+		    </choose>
+	<!-- 	    <if test="pager.orderCondition != null and pager.orderCondition != ''" >
+	      		${pager.orderCondition}
+	    	</if>
+	    	order by b.REC_ID DESC,b.RET_TIMES ASC -->
+		</select>
+		
+		<select id="sumFirPayBack" parameterType="java.lang.String" resultType="java.lang.Long">
+			select ISNULL( sum(FIR_PAYBACK), 0 ) from STU_INFO where REC_ID=#{id};   <!--sum(FIR_PAYBACK)的值为null  则返回0  -->
+		</select>
+		<select id="sumSecPayBack" parameterType="java.lang.String" resultType="java.lang.Long">
+			select ISNULL(SUM(SEC_PAYBACK), 0) from STU_INFO where REC_ID=#{id};
+		</select>
+		
+		<update id="update" parameterType="Object">
+			UPDATE RET_MONEY_INFO SET 
+			HAD_RET=#{HAD_RET},
+			TAL_BANLANCE=#{TAL_BANLANCE}
+			WHERE RET_ID = #{RetId}
+		</update>
+	  	
+	</mapper>

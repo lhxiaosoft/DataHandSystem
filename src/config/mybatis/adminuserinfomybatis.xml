@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="authority.edu.csu.dao.adminuserinfomanager.IAdminUserInfoDao">
+<select id="queryByList" parameterType="int" resultType="authority.edu.csu.model.BS_ADMINUSERINFO">
+SELECT * FROM BS_ADMINUSERINFO WHERE 1=1 
+ 	<if test="USER_LOGIN_NAME != null and USER_LOGIN_NAME != ''">
+      and   USER_LOGIN_NAME LIKE  '%'+#{USER_LOGIN_NAME}+'%'
+    </if>
+   	<if test="USER_CREATETIME != null and USER_CREATETIME != ''">
+      and   USER_CREATETIME = #{USER_CREATETIME}
+    </if>
+    
+    <if test="pager.orderCondition != null and pager.orderCondition != ''" >
+      ${pager.orderCondition}
+    </if>
+</select>
+<!-- 查询是否存在用户名密码 -->
+<select id="isByAdminUserAndAdminPwd" resultType="java.lang.Integer"  parameterType="Object">
+select count(1) from BS_ADMINUSERINFO WHERE USER_LOGIN_NAME = #{USER_LOGIN_NAME}  AND USER_LOGIN_PASSWORD = #{USER_LOGIN_PASSWORD}
+</select>
+<select id="getUserIdByUserName" parameterType="Object" resultType="String">
+select USER_ID from BS_ADMINUSERINFO WHERE USER_LOGIN_NAME = #{USER_LOGIN_NAME}
+</select>
+<select id="selectByUserNameToRoleCode" resultType="Object"  parameterType="Object">
+SELECT ROLE_ID FROM BS_ADMINROLEUSERINFO WHERE USER_ID=#{USER_ID}
+</select>
+<update id="update" parameterType="Object">
+ update BS_ADMINUSERINFO
+    <set>
+      <if test="USER_LOGIN_NAME != null" >
+        USER_LOGIN_NAME = #{USER_LOGIN_NAME,jdbcType=NVARCHAR},
+      </if>
+      <if test="NAME != null" >
+        NAME = #{NAME,jdbcType=NVARCHAR},
+      </if>
+      <if test="USER_LOGIN_PASSWORD != null" >
+        USER_LOGIN_PASSWORD = #{USER_LOGIN_PASSWORD,jdbcType=NVARCHAR},
+      </if>
+      <if test="USER_CREATETIME != null" >
+        USER_CREATETIME = #{USER_CREATETIME,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where USER_ID = #{USER_ID,jdbcType=NVARCHAR}
+</update>
+<insert id="add" keyColumn="USER_ID" parameterType="Object">
+INSERT INTO BS_ADMINUSERINFO(USER_ID,USER_LOGIN_NAME,NAME,USER_LOGIN_PASSWORD,USER_CREATETIME) 
+VALUES (#{USER_ID},#{USER_LOGIN_NAME},#{NAME},#{USER_LOGIN_PASSWORD},#{USER_CREATETIME})
+</insert>
+<delete id="del" parameterType="Object">
+DELETE FROM BS_ADMINUSERINFO WHERE USER_ID=#{ids}
+</delete>
+</mapper>

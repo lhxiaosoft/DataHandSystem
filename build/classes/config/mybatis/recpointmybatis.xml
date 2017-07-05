@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.csu.dao.IRecPointDao">
+
+	<select id="queryByList" parameterType="Object" resultType="edu.csu.model.REC_POINT">
+		SELECT * FROM REC_POINT WHERE 1=1
+		<if test="REC_NAME !=null and REC_NAME !='' and REC_NAME!='全部'">
+			AND REC_NAME LIKE '%${REC_NAME}%'
+		</if>
+		<if test="REC_YEAR !=null and REC_YEAR !='' and REC_YEAR!='全部'">
+			AND REC_YEAR LIKE '%${REC_YEAR}%'
+		</if>
+		<choose>
+			<when test="pager.orderCondition != null and pager.orderCondition != ''">
+	      		${pager.orderCondition}
+			</when>
+			<otherwise>
+				ORDER by REC_YEAR DESC
+			</otherwise>
+		</choose>
+	   
+    	
+	</select>
+	<insert id="add" keyColumn="REC_ID" parameterType="Object">
+		INSERT INTO REC_POINT(REC_ID,REC_CODE,REC_NAME,REC_YEAR,REC_NUMBER,REMARK,REC_SHOUNIT_PRICE) 
+		VALUES (#{REC_ID},#{REC_CODE},#{REC_NAME},#{REC_YEAR},#{REC_NUMBER},#{REMARK},#{REC_SHOUNIT_PRICE})
+	</insert>
+	
+	<update id="update" parameterType="Object">
+		UPDATE REC_POINT SET 
+		REC_CODE=#{REC_CODE},
+		REC_NAME =#{REC_NAME},
+		REC_YEAR=#{REC_YEAR},
+		REC_NUMBER=#{REC_NUMBER},
+		REMARK =#{REMARK},
+		REC_SHOUNIT_PRICE =#{REC_SHOUNIT_PRICE}
+		WHERE REC_ID = #{REC_ID}
+	</update>
+	
+	<select id="queryRecPointList" parameterType="Object" resultType="edu.csu.model.REC_POINT">
+			SELECT DISTINCT  REC_YEAR FROM REC_POINT 
+	</select>
+	<select id="queryRecPointListByRecYear" parameterType="Object" resultType="edu.csu.model.REC_POINT">
+			SELECT REC_ID,REC_NAME FROM REC_POINT WHERE 1=1
+			<if test="REC_YEAR !=null and REC_YEAR !=''">
+				AND REC_YEAR LIKE '%${REC_YEAR}%'
+			</if> 
+	</select>
+	<select id="queryRecNameList" resultType="edu.csu.model.REC_POINT">
+			SELECT DISTINCT REC_NAME FROM REC_POINT
+	</select>
+	<select id="queryRecYearList" parameterType="Object" resultType="edu.csu.model.REC_POINT">
+			SELECT DISTINCT  REC_YEAR FROM REC_POINT 
+	</select>
+	
+	<select id="queryById" parameterType="Object" resultType="edu.csu.model.REC_POINT">
+			SELECT * FROM REC_POINT WHERE REC_ID=#{REC_ID}
+	</select>
+	
+	<delete id="del" parameterType="java.lang.String" >
+	    delete from REC_POINT
+	    where REC_ID = #{id}
+  	</delete>
+  	
+  	<delete id="deleteById" parameterType="java.lang.String" >
+	    delete from REC_POINT
+	    where REC_ID = #{id}
+  	</delete>
+	
+</mapper>

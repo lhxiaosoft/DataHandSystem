@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="authority.edu.csu.dao.adminroleinfomanager.IAdminRoleInfoDao">
+<select id="queryByList" parameterType="int" resultType="authority.edu.csu.model.BS_ADMINROLEINFO">
+SELECT * FROM bs_adminroleinfo WHERE 1=1 
+ 	<if test="ROLE_NAME != null and ROLE_NAME != ''">
+      and   ROLE_NAME LIKE  '%'+#{ROLE_NAME}+'%'
+    </if>
+
+    <if test="pager.orderCondition != null and pager.orderCondition != ''" >
+      ${pager.orderCondition}
+    </if>
+
+</select>
+<select id="getRoleIdByRoleCode" resultType="Object"  parameterType="Object">
+SELECT ROLE_ID FROM BS_ADMINROLEINFO WHERE ROLE_CODE=#{ROLE_CODE}
+</select>
+<update id="update" parameterType="Object">
+	UPDATE BS_ADMINROLEINFO SET 
+	ROLE_CODE=#{ROLE_CODE},
+	ROLE_NAME =#{ROLE_NAME},
+	ROLE_DESCRIPTION =#{ROLE_DESCRIPTION}
+	WHERE ROLE_ID = #{ROLE_ID}
+</update>
+<insert id="add" keyColumn="ROLE_ID" parameterType="Object">
+INSERT INTO BS_ADMINROLEINFO(ROLE_ID,ROLE_CODE,ROLE_NAME,ROLE_DESCRIPTION) 
+VALUES (#{ROLE_ID},#{ROLE_CODE},#{ROLE_NAME},#{ROLE_DESCRIPTION})
+</insert>
+<delete id="del" parameterType="Object">
+DELETE FROM BS_ADMINROLEINFO WHERE ROLE_ID=#{ids}
+</delete>
+</mapper>

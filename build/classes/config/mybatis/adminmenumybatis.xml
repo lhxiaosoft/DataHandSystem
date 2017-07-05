@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="authority.edu.csu.dao.adminrolemenumanager.IAdminMenuDao">
+<select id="queryByList" parameterType="Object" resultType="authority.edu.csu.model.BS_ADMINMENUINFO">
+SELECT *  FROM BS_ADMINMENUINFO as B  where B.MENU_ID in(
+SELECT MENU_ID   FROM BS_ADMINROLEMENUINFO M WHERE M.ROLE_ID  IN (
+SELECT ROLE_ID FROM BS_ADMINROLEUSERINFO WHERE USER_ID = #{USER_ID})
+GROUP BY MENU_ID
+)
+    <if test="MENU_PARENT_CODE != null and MENU_PARENT_CODE != ''">
+      and   MENU_PARENT_CODE = #{MENU_PARENT_CODE}
+    </if>
+    order by B.MENU_CODE
+</select>
+<select id="queryByCount" resultType="java.lang.Integer"  parameterType="Object">
+	select count(1) from BS_ADMINMENUINFO 
+</select>
+<select id="queryByIdList" resultType="authority.edu.csu.model.BS_ADMINMENUINFO"  parameterType="Object">
+with f as 
+(
+select * from BS_ADMINMENUINFO where MENU_CODE=#{MENU_PARENT_CODE}
+union all
+select a.* from BS_ADMINMENUINFO as a inner join f as b on a.MENU_PARENT_CODE=b.MENU_CODE
+)
+<![CDATA[ 
+select * from f,BS_ADMINROLEMENUINFO as t WHERE f.MENU_ID =t.MENU_ID and f.MENU_CODE != #{MENU_PARENT_CODE} and f.MENU_IS_BUTTON  <> 'Y' and
+ ]]>
+ t.ROLE_ID in
+       <foreach item="item" index="index" collection="JSCODE" 
+                         open="(" separator="," close=")">
+                        #{item}
+                </foreach>  
+ order by MENU_NAME 
+	
+</select>
+
+</mapper>

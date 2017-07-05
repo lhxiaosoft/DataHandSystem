@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="authority.edu.csu.dao.adminrolemenuinfomanager.IAdminRoleMenuInfoDao">
+<select id="queryByList" parameterType="int" resultType="authority.edu.csu.vo.AdminRoleMenuInfoVo">
+select menu_code,menu_name,menu_parent_code  , 'true' checked from bs_adminrolemenuinfo as t,bs_adminmenuinfo as b where b.menu_id = t.menu_id and t.role_id = #{ROLE_IDEX}
+UNION ALL
+SELECT M2.MENU_CODE,M2.MENU_NAME,M2.MENU_PARENT_CODE , 'false' checked  FROM BS_ADMINMENUINFO  M2 WHERE M2.MENU_CODE NOT IN (SELECT MENU_ID FROM BS_ADMINROLEMENUINFO WHERE ROLE_ID 
+= #{ROLE_IDEX}
+)
+</select>
+<delete id="delByRoleId" parameterType="Object">
+DELETE FROM BS_ADMINROLEMENUINFO WHERE ROLE_ID = #{ROLE_IDEX}
+</delete>
+<insert id="addMenuByRoleId" parameterType="Object" keyColumn="CODE">
+ INSERT INTO BS_ADMINROLEMENUINFO (ROLEMENU_ID,ROLE_ID,MENU_ID) VALUES (#{ROLEMENU_ID},#{ROLE_IDEX},#{MENU_CODE})
+</insert>
+<select id="getUserALLAutMenu" parameterType="int" resultType="authority.edu.csu.vo.AdminRoleMenuInfoVo">
+SELECT  MENU_CODE,MENU_NAME,MENU_PARENT_CODE  , 'true' checked 
+FROM BS_ADMINROLEMENUINFO as t,BS_ADMINMENUINFO as a where a.MENU_ID = 
+t.MENU_ID and ROLE_ID         
+= #{ROLE_IDEX}
+</select>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+ xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:tx="http://www.springframework.org/schema/tx" 
+ xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+ xmlns:p="http://www.springframework.org/schema/p"
+ xmlns:aop="http://www.springframework.org/schema/aop"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/jdbc
+    http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"> 
+    	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    		<!--SqlServer-->
+	         <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+	         <!-- 本地数据库 -->
+ 	        <!-- <property name="url" value="jdbc:sqlserver://127.0.0.1:1433;DatabaseName=DataHandSystem"/>  -->
+ 	        <!-- <property name="username" value="sa"/>
+	        <property name="password" value="123456"/> --> 
+	        
+	        <!-- 研办服务器 数据库-->
+	     	<property name="url" value="jdbc:sqlserver://202.197.41.237:1433;DatabaseName=DataHandSystem"/>
+	        <property name="username" value="root"/>
+	        <property name="password" value="123456"/> 
+    	   <!-- 202.197.41.237 服务器IP地址-->
+	    	<!--mysql-->
+	       <!--  <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+	        <property name="url" value="jdbc:mysql://127.0.0.1:3306/platonline"/>
+	        <property name="username" value="root"/>
+	        <property name="password" value="root"/> -->
+	         
+	        <!--oracle
+	        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+	        <property name="url" value="jdbc:oracle:thin:@localhost:1521:ORCL"/>
+	        <property name="username" value="back_system"/>
+	        <property name="password" value="back_system"/>-->
+    	</bean>
+    	
+		<!-- myBatis文件 -->
+		<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+   			 <property name="configLocation" value="classpath:config/mybatis.xml" />
+			 <property name="mapperLocations" value="classpath:config/mybatis/*.xml" /> 
+			<property name="dataSource" ref="dataSource" />
+		</bean>
+    
+   <!-- start事物 -->
+      <!-- 配置事务管理器 -->
+<!-- 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean> -->
+	
+	<!--  配置事务传播特性 -->
+<!-- 	<tx:advice id="TestAdvice" transaction-manager="transactionManager">
+	    <tx:attributes>
+	      <tx:method name="save*" propagation="REQUIRED"/>
+	      <tx:method name="del*" propagation="REQUIRED"/>
+	      <tx:method name="update*" propagation="REQUIRED"/>
+	      <tx:method name="add*" propagation="REQUIRED"/>
+	      <tx:method name="find*" propagation="REQUIRED"/>
+	      <tx:method name="get*" propagation="REQUIRED"/>
+	      <tx:method name="apply*" propagation="REQUIRED"/>
+	    </tx:attributes>spring.xml
+	</tx:advice> -->
+	
+	<!--  配置参与事务的类 -->
+<!-- 	<aop:config>
+		<aop:pointcut id="allTestServiceMethod" expression="execution(* com.platonline.service.imp.*.*(..))"/>
+		<aop:advisor pointcut-ref="allTestServiceMethod" advice-ref="TestAdvice" />
+	</aop:config> -->
+    <!-- end事物 -->
+<import resource="spring/*spring.xml"/>
+</beans>
+	
